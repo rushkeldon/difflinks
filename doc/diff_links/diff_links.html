@@ -1,0 +1,353 @@
+<html>
+	<head>
+		<title>file links</title>
+	</head>
+	<base target="fileLauncher">
+	<style>
+		body {
+			font-family: "Courier New";
+			color: #B5BC67;
+			background-color: #1D1F20;
+			font-size: 16px;
+		}
+		div {
+			border: 2px solid #EFC369;
+			box-sizing: border-box;
+			background-color: #1D1F20;
+			padding: 10px;
+			font-size: 16px;
+		}
+
+		h3{
+			margin: 0px;
+			font-size : 20px;
+			line-height: 20px;
+			padding: 0px;
+			display: inline-block;
+		}
+
+		.timestamp{
+			color: #EFC369;
+		}
+
+		.branch{
+			border: 0px solid #1D1F20;
+			display: inline-block;
+			padding: 0px;
+			font-weight: bold;
+			color: #EFC369;
+		}
+
+		.branch-legend{
+			border: 0px solid #1D1F20;
+			display: inline-block;
+			line-height: 20px;
+			padding: 10px 0px;
+		}
+
+		.middot{
+			font-weight: bold;
+			white-space: pre;
+		}
+		.middot:before {
+			content: "  \2022   ";
+		}
+
+		.link-list{
+			margin: 0px 15px 30px 15px;
+			padding: 0px;
+			position: relative;
+		}
+
+		.hidden-iframe{
+			display : none;
+		}
+
+		a{
+			-webkit-transition: 0.4s;
+			background-color: #1D1F20;
+			box-sizing: border-box;
+			color: #87CEFA;
+			display: block;
+			font-size: 18px;
+			height: 28px;
+			line-height: 28px;
+			margin: 0px;
+			overflow: hidden;
+			padding : 0px 5px;
+			position: relative;
+			text-decoration: none;
+			transition: 0.4s;
+			white-space: nowrap;
+			width: 100%;
+		}
+		a:visited {
+			color: #B5BC67;
+		}
+		a:hover {
+			text-decoration: none;
+			color: #EFC369;
+			letter-spacing: 0.02rem;
+			padding: 0px 0px 0px 14px;
+			background-color: #000000;
+		}
+		.hidden {
+			display: none;
+		}
+		.yellow {
+			color: #EFC369;
+		}
+		.purple {
+			color: #A494C0;
+		}
+		.orange {
+			color: #D7925F;
+		}
+		.greenbright {
+			color: #00FF00;
+			font-size: 120%;
+		}
+		.pink {
+			color: #FF00FF;
+		}
+		.comment {
+			color: #EFC369;
+			/*font-weight: bold;*/
+		}
+		strong {
+			font-weight: bold;
+			font-size: 105%;
+		}
+		.title {
+			line-height: 1.5;
+			margin-left: -3px;
+		}
+		button {
+			box-sizing: border-box;
+			font-family: "Courier New";
+			font-size: 16px;
+			color: #EFC369;
+			border: 2px solid #D7925F;
+			background-color: #1D1F20;
+			border-radius: 10px;
+			padding: 12px 16px;
+			outline: 0px;
+			display: inline-block;
+			font-weight: bold;
+			margin-left: 0px;
+			cursor: default;
+		}
+		button:hover {
+			color: #D7925F;
+			border: 2px solid #EFC369;
+			cursor: pointer;
+			background-color: black;
+		}
+		button:focus {
+			color: #EFC369;
+			border: 2px solid #D7925F;
+			cursor: default;
+		}
+		button:active {
+			color: yellow;
+			border: 2px solid #EFC369;
+			cursor: default;
+		}
+	</style>
+	<body>
+		<h3>File Link List</h3><div class="branch-legend"><span class="middot"></span><span class="timestamp purple"></span><span class="middot"></span>diff <span class="branch branch-current"></span> to <span class="branch branch-diff"></span></div>
+		<iframe class="hidden-iframe" name="fileLauncher" id="fileLauncher" src=""></iframe>
+		<script>
+			var CN = "LinkList";
+			var request;
+			var files = [];
+			var urlParams = {
+				currentBranch : '',
+				diffBranch : ''
+			}
+
+			function init(){
+				getURLparamObject();
+				populateBranchNames();
+				populateTimestamp();
+				request = new XMLHttpRequest();
+				addListeners();
+				getFileListText();
+			}
+
+			function addListeners(){
+				request.addEventListener( 'load', responseReceived );
+				request.addEventListener( 'error', requestFailed );
+				request.addEventListener( 'abort', requestFailed );
+			}
+
+			function removeListeners(){
+				request.removeEventListener( 'load', responseReceived );
+				request.removeEventListener( 'error', requestFailed );
+				request.removeEventListener( 'abort', requestFailed );
+			}
+
+			function populateTimestamp(){
+				var timeElem = window.document.querySelector( '.timestamp' );
+				timeElem.appendChild( document.createTextNode( timestamp( true ) ) );
+			}
+
+			function populateBranchNames(){
+				var branchLegend = window.document.querySelector( '.branch-legend' );
+				var currentBranchElem = window.document.querySelector( '.branch-current' );
+				var diffBranchElem = window.document.querySelector( '.branch-diff' );
+
+				if( urlParams && urlParams.hasOwnProperty( 'currentBranch' ) && urlParams.currentBranch ){
+					currentBranchElem.appendChild( document.createTextNode( urlParams.currentBranch ) );
+				} else {
+					branchLegend.className += " hidden";
+				}
+
+				if( urlParams && urlParams.hasOwnProperty( 'diffBranch' ) && urlParams.diffBranch ){
+					diffBranchElem.appendChild( document.createTextNode( urlParams.diffBranch ) );
+				} else {
+					branchLegend.className += " hidden";
+				}
+			}
+
+			function getFileListText(){
+				try{
+					request.open( 'GET', 'file_list.txt' );
+					request.send();
+				} catch( error ){
+					console.log( error );
+				}
+			}
+
+			function responseReceived( e ) {
+				populateFilesFromTxt( this.responseText );
+				removeListeners();
+			}
+
+			function requestFailed( e ) {
+				console.dir( e );
+				removeListeners();
+			}
+
+			function populateFilesFromTxt( txt ){
+				txt = txt.replaceAll( 'View Diff', '' );
+				txt = txt.replaceAll( ' ', '' );
+
+				// this is from a git report
+				if( String( txt ).indexOf( '|' ) != -1 ){
+					var i, file;
+					files = txt.split( '\n' );
+					for( i=0; i<files.length; i++ ){
+						file = files[ i ];
+						files[ i ] = file.split( '|' )[ 0 ];
+					}
+				} else {
+					files = txt.split( '\n' );
+				}
+
+				makeFilesIntoLinks();
+			}
+
+			function makeFilesIntoLinks(){
+				if( !files || !files.length ){ return; }
+
+				var linkList = document.createElement( 'div' );
+				linkList.className = 'link-list';
+				var apiRootURL = "http://localhost:63342/api/file/";
+				var excludeExtensions = [
+					'.css',
+					'.js',
+					'.project'
+				];
+
+				var i, ii, ext, link, linkElem;
+				linkURLs = [];
+
+				// get the links
+				for( i=0; i<files.length; i++ ){
+					link = files[ i ];
+					for( ii=0; ii<excludeExtensions.length; ii++  ){
+						ext = excludeExtensions[ ii ];
+						if( link.indexOf( ext ) != -1 ){
+							// we have a match
+							link = "";
+							break;
+						}
+					}
+					if( link ){
+						linkURLs.push( link );
+					}
+				}
+
+				var linkURL, linkArray, fileName;
+				for( i=0; i<linkURLs.length; i++ ){
+					linkURL = linkURLs[ i ].replaceAll( 'View Diff', '' );
+					linkArray = linkURL.split( '/' );
+					fileName = linkArray[ linkArray.length - 1 ];
+					if( linkURL ){
+						linkElem = document.createElement( 'a' );
+						linkElem.href = apiRootURL + linkURL;
+						linkElem.title = fileName;
+						if( urlParams.hasOwnProperty( 'nameOnly' ) ){
+							linkElem.appendChild( document.createTextNode( " \u27A1 " + fileName ) );
+						} else {
+							linkElem.appendChild( document.createTextNode( " \u27A1 " + linkURL ) );
+						}
+						linkList.appendChild( linkElem );
+					}
+				}
+				document.body.appendChild( linkList );
+			}
+
+			/* utils */
+			function timestamp( isDateRequested ) {
+				var stamp = "";
+				var now = new Date();
+				var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
+				var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
+				var suffix = ( time[ 0 ] < 12 ) ? "AM" : "PM";
+				time[ 0 ] = ( time[ 0 ] < 12 ) ? time[ 0 ] : time[ 0 ] - 12;
+				time[ 0 ] = time[ 0 ] ? time[ 0 ] : 12;
+				for( var i = 1; i < 3; i++ ) {
+					if( time[ i ] < 10 ) {
+						time[ i ] = "0" + time[ i ];
+					}
+				}
+				if( isDateRequested ){
+					stamp = date.join( "/" ) + " " + time.join( ":" ) + " " + suffix;
+				} else {
+					stamp = time.join( ":" ) + " " + suffix;
+				}
+				return stamp;
+			}
+
+			String.prototype.replaceAll = function(search, replacement) {
+				var target = this;
+				return target.replace(new RegExp(search, 'g'), replacement);
+			};
+
+			function getURLparamObject()
+			{
+				urlParams = new Object();
+				var echo = '';
+				var e;
+				var a = /\+/g;
+				var r = /([^&=]+)=?([^&]*)/g;
+				var d = function decode( s )
+				{
+					return decodeURIComponent( s.replace( a, ' ' ) );
+				};
+				var q = window.location.search.substring( 1 );
+
+				while( e = r.exec( q ) )
+				{
+					urlParams[ d( e[ 1 ] ) ] = d( e[ 2 ] );
+				}
+				return urlParams;
+			}
+
+			/* entrypoint */
+			init();
+		</script>
+	</body>
+</html>

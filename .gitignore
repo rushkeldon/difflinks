@@ -1,0 +1,5 @@
+# it is nice to have a directory that is not part of the git repo to keep tools and such in
+
+# doc
+*.iml
+.idea
