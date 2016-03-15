@@ -32,7 +32,7 @@ var excludeExtensions = [
     # • gets a list of all files that are different between branches and writes them to fileListPath
     # • opens the webpage which reads fileListPath and creates a list of files with links that open in your IDE
     # usage :
-    # $ diffLinks branchname
+    # $ diffLinks [branchname]
     function diffLinks(){
         cd $projectPath
         local projectName=${PWD##*/}
