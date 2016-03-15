@@ -3,7 +3,7 @@
 
 ## Prerequistes
 * git
-* an IDE (such as IntelliJ IDEA 15) that a) creates a web server on port 8080 and b) supports the file protocol for links such as http://localhost:63342/api/file/projectroot/.../filename.ext
+* an IDE (such as IntelliJ IDEA 15) that a) creates a web server on port 8080 and b) supports the file protocol for links such as `http://localhost:63342/api/file/projectroot/.../filename.ext`
 
 ## Getting Started
 * download the ZIP or fork / clone this repo to your local machine
