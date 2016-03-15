@@ -56,3 +56,6 @@ var excludeExtensions = [
         fi
     }
 ```
+### Example of Web Page Link List
+![Example List](http://appcloud9.com/img/diff_links.png)
+
