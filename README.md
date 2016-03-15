@@ -7,11 +7,11 @@
 
 ## Getting Started
 * download the ZIP or fork / clone this repo to your local machine
-* put the function below in your ~/.bash_profile file to have a handy function in the Terminal
+* put the function below in your ~/.bash_profile
 * keep 'projectPath' up-to-date to your most current project
 * copy the 'doc' directory containing the 'diff_links' directory into your current project
 * add 'doc' to your .gitignore if you like... (I do!)
-* on line 257 in diff_links.html there is an array of file extensions to ignore in making the list you may want to edit
+* on `line 257` in `diff_links.html` there is an array of file extensions to ignore - you may want to edit this
 
 ### Current excludeExtensions
 ```javascript
