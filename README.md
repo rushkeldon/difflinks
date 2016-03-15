@@ -53,7 +53,7 @@ var excludeExtensions = [
 ```
 ### Example of Web Page Link List
 #### Note : this is using the 'nameOnly' URL parameter :
-`http://localhost:8080/difflinks/doc/diff_links/diff_links.html?currentBranch=master&diffBranch=develop&nameOnly`
+`http://localhost:8080/project/doc/diff_links/diff_links.html?currentBranch=release/1.9&diffBranch=develop&nameOnly`
 
 ![Example List](http://appcloud9.com/img/diff_links.png)
 
