@@ -25,11 +25,6 @@ var excludeExtensions = [
 ### Function for your ~/.bash_profile
 
 ```bash
-    # put the function below in your .bash_profile to have a handy function in the Terminal
-    # keep 'projectPath' up-to-date to your most current project
-    # copy the 'doc' directory containing the 'diff_links' directory into your project
-    # add 'doc' to your .gitignore if you like...
-    
     # EDIT : important! keep this path updated to your most current project
     export projectPath="/Users/kvr/Desktop/working/difflinks"
     
